@@ -1,0 +1,14 @@
+//在子项目可以定义自己的特有的行为
+plugins {
+    id 'war'
+}
+
+dependencies {
+    //比如project-web依赖project-model和project-service
+    compile project(':project-model')
+    //排除依赖
+    implementation (project(":project-service")) {
+        exclude group: "org.springframework", module: "spring-context"
+    }
+    implementation('org.springframework.boot:spring-boot-starter-web')
+}

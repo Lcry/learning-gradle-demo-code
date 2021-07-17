@@ -1,0 +1,12 @@
+rootProject.name = 'learning-gradle-demo-project'
+include 'project-model'
+include 'project-service'
+include 'project-web'
+
+
+/**更改构建文件，将build.gradle 更换成更有意义的命名,如 model.gradle
+ * it.name 是子项目名：project-model project-service project-web*/
+//rootProject.children.each {
+//    /**设置构建脚本文件名*/
+//    it.buildFileName = it.name + '.gradle' - 'project-'
+//}

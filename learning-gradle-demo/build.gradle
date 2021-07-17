@@ -1,0 +1,119 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'maven'
+}
+
+group 'com.biejieshi'
+version '1.0.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.encoding = "UTF-8"
+}
+
+
+ext {
+    set("junitVersion", "4.11")
+    set("junitJupiterVersion", "5.7.0")
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [ 'src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+
+repositories {
+    mavenLocal()
+    //公司自建私服
+    maven { url "https://xxxxxx/repository/maven-public/" }
+    //阿里云镜像
+    maven { url "https://maven.aliyun.com/nexus/content/groups/public/" }
+    maven { url "https://jitpack.io" }
+    maven { url "https://maven.springframework.org/release" }
+    mavenCentral()
+    maven {
+        url "http://repo.mycompany.com/maven2"
+        credentials {
+            username 'user'
+            password 'password'
+        }
+    }
+    maven {
+        url "sftp://repo.mycompany.com:22/maven2"
+        credentials {
+            username 'user'
+            password 'password'
+        }
+    }
+    ivy {
+        url "s3://myCompanyBucket/ivyrepo"
+        credentials(AwsCredentials) {
+            accessKey "someKey"
+            secretKey "someSecret"
+            //可选项
+            sessionToken "someSTSToken"
+        }
+    }
+    //本地
+    maven { url uri('G:\\IdeaProjects\\learning-gradle') }
+}
+
+dependencies {
+    testImplementation 'junit:junit:${junitVersion}'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}'
+}
+
+task createJavadoc(type:Javadoc){
+    destinationDir = file("${project.projectDir}/doc")
+    source sourceSets.main.allJava
+    title sourceSets.main.name
+}
+
+task copyAndRenameJarToTag(type: Copy) {
+    delete "${rootDir}/tag/"
+    from("${buildDir}/libs/${project.name}-${version}.jar")
+    into("${rootDir}/tag/")
+    rename("${project.name}-${version}.jar", "${project.name}.jar")
+}
+assemble.finalizedBy(copyAndRenameJarToTag)
+
+
+task copyAndRenameJarToDeploy(type: Copy) {
+    delete "${rootDir}/deploy/"
+    from("${buildDir}/libs/${project.name}-${version}.jar")
+    into("${rootDir}/deploy/")
+    rename("${project.name}-${version}.jar", "app.jar")
+}
+assemble.finalizedBy(copyAndRenameJarToDeploy)
+
+
+
+
+test {
+    enabled = false
+    useJUnitPlatform()
+}

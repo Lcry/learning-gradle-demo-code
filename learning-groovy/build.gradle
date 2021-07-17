@@ -1,0 +1,203 @@
+//plugins {
+//    id 'java'
+//}
+//
+//group 'com.biejieshi'
+//version '1.0.0-SNAPSHOT'
+//
+//repositories {
+//    mavenCentral()
+//}
+//
+//dependencies {
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+//}
+//
+//test {
+//    useJUnitPlatform()
+//}
+
+//description 'lcry project '
+description 'this is the first project'
+
+//演示脚本内容：它将打印 “this is the first gradle“。
+//脚本中定义一个任务名称 firstgroovy，这是用来打印”this is the first gradle“ 字符串。内容如下：
+task firstgroovy {
+    doLast {
+        println 'this is the first gradle'
+    }
+}
+
+task upperStr {
+    doLast {
+        String expString = 'my first gradle'
+        println "Original : " + expString
+        println "Upper case Result: " + expString.toUpperCase()
+    }
+}
+
+task printCount {
+    doLast {
+        10.times {
+            print "$it"
+        }
+        println ""
+    }
+}
+
+
+//println 'this is out start print'
+
+//task testDoLast{
+//    println 'this is task start print'
+//
+//    doFirst {
+//        println 'this is task doFirst print'
+//    }
+//
+//    doLast {
+//        println 'this is task doLast print'
+//    }
+//
+//    println 'this is task end print'
+//}
+//
+//println 'this is out end print'
+
+
+//task groovyJDKMethod {
+//    String myName = "lcry";
+//    myName.each() {
+//        println "${it}"
+//    };
+//}
+
+
+//task hardware{
+//    println '学习Gradle要提前准备好电脑以及JDK环境'
+//}
+//
+//task learningGradle(dependsOn: hardware) {
+//    doLast {
+//        println '我正在学习gradle'
+//    }
+//}
+
+
+//task taskA(dependsOn: taskB) {
+//    println '我是任务A,依赖任务B'
+//}
+//task taskB(dependsOn: taskA){
+//    println '我是任务B,依赖任务A'
+//}
+
+//task Position{
+//    println ''
+//}
+//println Position.name
+//println project.Position.nam
+
+//task Position1
+//task Position2
+//
+//println tasks.Position1.name
+//println tasks['Position1'].name
+//println tasks['Position2'].name
+
+
+//task hardware{
+//    println '学习Gradle要提前准备好电脑以及JDK环境'
+//}
+
+
+
+task learningGradle() {
+    doLast {
+        println '我正在学习gradle'
+    }
+}
+
+//learningGradle.dependsOn hardware
+
+task taskA {
+    doLast{
+        println 'taskX'
+    }
+}
+taskA.dependsOn {
+    tasks.findAll {
+        //依赖所有lib开头的任务
+        task -> task.name.startsWith('lib')
+    }
+}
+task lib1 {
+    doLast{
+        println 'lib1'
+    }
+}
+task lib2 {
+    doLast{
+        println 'lib2'
+    }
+}
+task notALib {
+    doLast{
+        println 'notALib'
+    }
+}
+
+//task copyResources(type: Copy) {
+//    description '复制资源目录文件夹的文件到指定目录,此description并不会执行'
+//    from 'resources'
+//    into 'target'
+//    include('**/*.txt', '**/*.xml', '**/*.properties')
+//    println("试一试描述")
+//}
+
+
+
+task compile {
+    doLast{
+        println '我执行编译'
+    }
+
+    doFirst{
+        // 在这里可以定义一些条件
+        if (true) {
+            throw new StopExecutionException()
+        }
+    }
+}
+
+task myTask(dependsOn: 'compile') {
+    doLast{
+        println '我还是会正常执行'
+    }
+}
+
+
+//多个项目依赖构建
+task task1 {
+    doLast{
+        println 'task1:编译源代码 #1'
+    }
+}
+
+task task2(dependsOn: task1) {
+    doLast{
+        println 'task2:编译测试代码 #2'
+    }
+}
+
+task task3(dependsOn: [task1, task2]) {
+    doLast{
+        println 'task3:运行测试代码 #3'
+    }
+}
+
+task task4(dependsOn: [task1, task3]) {
+    doLast{
+        println 'task4:构建项目 #4'
+    }
+}
